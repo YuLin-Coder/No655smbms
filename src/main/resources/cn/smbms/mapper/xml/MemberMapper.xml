@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smbms.mapper.MemberMapper">
+  <resultMap id="BaseResultMap" type="cn.smbms.pojo.Member">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="memberName" jdbcType="VARCHAR" property="membername" />
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="endTime" jdbcType="INTEGER" property="endtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, memberName, phone,age, createTime, endTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smbms_member
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from smbms_member
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.smbms.pojo.Member">
+    insert into smbms_member (id, memberName, phone,age,
+      createTime, endTime)
+    values (#{id,jdbcType=INTEGER}, #{membername,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},#{age,jdbcType=INTEGER},
+      #{createtime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.smbms.pojo.Member">
+    insert into smbms_member
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="membername != null">
+        memberName,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="age != null">
+        age,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="endtime != null">
+        endTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="membername != null">
+        #{membername,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.smbms.pojo.Member">
+    update smbms_member
+    <set>
+      <if test="membername != null">
+        memberName = #{membername,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="age != null">
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        endTime = #{endtime,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.smbms.pojo.Member">
+    update smbms_member
+    set memberName = #{membername,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      endTime = #{endtime,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 分页公共sql -->
+  <sql id="queryPage">
+    from smbms_member
+    <where>
+      <if test="membername!=null">
+        and membername LIKE CONCAT('%',#{membername},'%')
+      </if>
+      <if test="phone!=null">
+        and phone = #{phone}
+      </if>
+    </where>
+  </sql>
+
+  <!-- 动态查询+分页的数据显示 -->
+  <select id="findByQuery" resultType="Member"
+          parameterType="hashmap">
+    select *
+    <include refid="queryPage"/>
+    LIMIT #{index},#{size}
+  </select>
+
+  <!-- 动态查询+分页的总条数 -->
+  <select id="countByQuery" resultType="Integer"
+          parameterType="hashmap">
+    select count(*)
+    <include refid="queryPage"/>
+  </select>
+
+</mapper>

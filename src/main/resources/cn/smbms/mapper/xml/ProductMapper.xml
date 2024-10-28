@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.smbms.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="cn.smbms.pojo.Product">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="productName" jdbcType="VARCHAR" property="productname" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="purchasePrice" jdbcType="DECIMAL" property="purchaseprice" />
+    <result column="productCode" jdbcType="VARCHAR" property="productcode" />
+    <result column="manuFacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="place" jdbcType="VARCHAR" property="place" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, productName, price, purchasePrice, productCode, manuFacturer, place
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from smbms_product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from smbms_product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.smbms.pojo.Product">
+    insert into smbms_product (id, productName, price, 
+      purchasePrice, productCode, manuFacturer, 
+      place)
+    values (#{id,jdbcType=INTEGER}, #{productname,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{purchaseprice,jdbcType=DECIMAL}, #{productcode,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR}, 
+      #{place,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.smbms.pojo.Product">
+    insert into smbms_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productname != null">
+        productName,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="purchaseprice != null">
+        purchasePrice,
+      </if>
+      <if test="productcode != null">
+        productCode,
+      </if>
+      <if test="manufacturer != null">
+        manuFacturer,
+      </if>
+      <if test="place != null">
+        place,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productname != null">
+        #{productname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseprice != null">
+        #{purchaseprice,jdbcType=DECIMAL},
+      </if>
+      <if test="productcode != null">
+        #{productcode,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="place != null">
+        #{place,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.smbms.pojo.Product">
+    update smbms_product
+    <set>
+      <if test="productname != null">
+        productName = #{productname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseprice != null">
+        purchasePrice = #{purchaseprice,jdbcType=DECIMAL},
+      </if>
+      <if test="productcode != null">
+        productCode = #{productcode,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        manuFacturer = #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="place != null">
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.smbms.pojo.Product">
+    update smbms_product
+    set productName = #{productname,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      purchasePrice = #{purchaseprice,jdbcType=DECIMAL},
+      productCode = #{productcode,jdbcType=VARCHAR},
+      manuFacturer = #{manufacturer,jdbcType=VARCHAR},
+      place = #{place,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 分页公共sql -->
+  <sql id="queryPage">
+    from smbms_product
+    <where>
+      <if test="productname!=null">
+        and productname LIKE CONCAT('%',#{productname},'%')
+      </if>
+      <if test="productcode!=null">
+        and productcode = #{productcode}
+      </if>
+    </where>
+  </sql>
+
+  <!-- 动态查询+分页的数据显示 -->
+  <select id="findByQuery" resultType="Product"
+          parameterType="hashmap">
+    select *
+    <include refid="queryPage"/>
+    LIMIT #{index},#{size}
+  </select>
+
+  <!-- 动态查询+分页的总条数 -->
+  <select id="countByQuery" resultType="Integer"
+          parameterType="hashmap">
+    select count(*)
+    <include refid="queryPage"/>
+  </select>
+
+</mapper>
